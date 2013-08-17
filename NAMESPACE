@@ -1,0 +1,3 @@
+useDynLib(BayesSAE)
+export(BayesSAE, link.model, model.compare, samp.model, theta.HB, y.rep)
+
