@@ -29,7 +29,7 @@ function(theta, beta, lambda, y, X, phi, li1, li2, num, n, betaprior, Sqsigmapri
      }
      result[[1]] <- array(result[[1]], c(m, n))
      result[[2]] <- array(result[[2]], c(p, n))
-     MCMCsample <- list(theta = result[[1]], beta = result[[2]], Sqsigmav = result[[3]],
-          lambda = result[[4]], rate_lam = result[[19]] / (n-1), type = "SFH")
+     MCMCsample <- list(theta = result[[1]], beta = result[[2]], sigv = result[[3]],
+          lam = result[[4]], lam.rate = result[[19]] / (n-1), type = "SFH")
      MCMCsample
 }

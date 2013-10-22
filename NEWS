@@ -1,0 +1,10 @@
+Changes in Version 1.0-1
+
+	o Documentation update.
+	
+	o Change in the specification of the model. Model is directly specified via function BayesSAE
+	
+	o BayesSAE returns with a S3 class of object and generics are involved. 
+	
+	o Posterior draws are allowed to coerce to the mcmc class, which can are allowed to use function in 
+	the coda package for further diagnosis 

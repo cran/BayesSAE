@@ -5,7 +5,10 @@
 \title{Bayesian Data Analysis of Small Area Models
 }
 \description{The package provides a variety of functions to analysis several specific small area area-level 
-models in Bayesian context. 
+models in Bayesian context. Function \code{BayesSAE} specifies the model and obtain MCMC posterior draws. 
+\code{summary}, extract information from the returned object of class \code{BayesSAE}. \code{replication}
+gives the replicated data which could be used for both numerical and graphical posterior checks. Function 
+\code{mcmc} generates the \code{mcmc} object of class which could be used for further MCMC diagnosis.    
 }
 \details{
 \tabular{ll}{
@@ -15,10 +18,7 @@ Version: \tab 1.0\cr
 Date: \tab 2013-08-17\cr
 License: \tab GPL-2\cr
 }
-This package provides functions for Bayesian analysis of small area models. The model should be first specified 
-using the \code{\link{samp.model}} and \code{\link{link.model}} function at first. MCMC draws could be obtained 
-using \code{\link{BayesSAE}} function. Function \code{\link{y.rep}} and \code{\link{model.compare}} allow users 
-to check whether the model fits the data well and compare between different small area models.
+This package provides functions for Bayesian analysis of small area models. 
 }
 \author{
 Chengchun Shi

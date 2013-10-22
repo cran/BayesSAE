@@ -1,84 +1,133 @@
 \name{BayesSAE}
 \alias{BayesSAE}
+\alias{print.BayesSAE}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{MCMC Draws Based on Area-Level Models 
 %%  ~~function to do ... ~~
 }
 \description{This function obtains MCMC draws of specific small area area-level models defined by the 
-\code{samp.model} and \code{link.model} function. 
+sampling model and linking model. 
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-BayesSAE(samp, link, MCMCstart, prior, n)
+BayesSAE(formula, innov = "normal", df = NULL, b = NA, spatial = FALSE, tran = 
+     "F", prox = NULL, beta.start = NULL, theta.start = NULL, lam.start = runif(1), 
+     prior = NULL, mcmc = 5000, burnin = 2500, thin = 5, data)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{samp}{a list returned by the function \code{\link{samp.model}}. 
-%%     ~~Describe \code{samp} here~~
-}
-  \item{link}{a list returned by the function \code{\link{link.model}}. 
-%%     ~~Describe \code{link} here~~
-}
-  \item{MCMCstart}{a list specifying MCMC initial values of parameters. See Details.
+  \item{formula}{a symbolic description of the model to be fitted (of type y ~ x | z). \code{y} is the
+  response variable in the sampling model while \code{x} is the design matrix in the linking model, 
+  and \code{z} is the estimated variance of direct estimation in the sampling model. See Rao (2003) 
+  for details about the sampling model and linking model in small area estimation.
+} 
+  \item{innov}{distribution of innovations in the sampling model. to be chosen between \code{"normal"}
+  and "t". 
+} 
+  \item{df}{a vector containing degrees of freedom for the \code{t} innovation in the sampling model
+  if \code{innov = "t"}. 
 %%     ~~Describe \code{MCMCstart} here~~
+}
+  \item{b}{an optional weights vector to be used in the fitting process. Number of domains must be 
+  the same as that of the direct estimators. By default is a vector of ones. See Details.
+}  
+  \item{spatial}{a logical variable indicating whether it's a spatial model or not.
+}  
+  \item{tran}{the transformation to be taken on the responsive variable in the linking model, to be chosen
+  between \code{"F"}, \code{"log"} or \code{"logit"}. \code{"F"} is the default value and indicates no 
+  transformation taken. See Details.
+}
+  \item{prox}{\code{l * 2} matrix defining the neighbourhood matrix. See also Details.
+}
+  \item{beta.start}{initial values for beta's. By default is the coefficients of regression model
+  where the response vector is directly regressed on the design matrix in the linking model.
+}
+  \item{theta.start}{initial values for theta's. By default is the response vector.  
+}
+  \item{lam.start}{initial value for lambda in the spatial model. See You and Chapman (2006).
 }
   \item{prior}{a list of objects specifying priors. See Details.
 %%     ~~Describe \code{prior} here~~
 }
-  \item{n}{user-specified number of MCMC draws. 
+  \item{mcmc}{user-specified number of MCMC draws. 
 %%     ~~Describe \code{n} here~~
 }
+  \item{burnin}{The number of burnin iterations for the sampler. See Gelman (2006). 
 }
-\details{The argument \code{MCMCstart} should contain the following components:
-
-\itemize{
-\item \code{theta}: vector of initial values of the variable of interest for each domain. The number of domains
-should be the same as that of direct estimators. And values must be sorted as direct estimators.
-\item \code{beta}: vector of initial values of the regression coefficient. 
+  \item{thin}{the thinning interval used in the simulation. See Gelman (2006). 
 }
+  \item{data}{an optional data frame, list or environment containing variables in the model.
+}
+}
+\details{
+Let \eqn{\theta_i} donates variable of interest for each domain i, \eqn{x_i} the regressors, 
+\eqn{\beta} the regression coefficient, \eqn{v_i} i.i.d normal innovations. If argument \code{b} is 
+specified, the linking model is of the form: \eqn{\theta_i = x_i \beta + b_i v_i}. 
 
-And another attribute \code{lambda} bounded by 0 and 1 can be determined as the initial value in the spatial model. 
-See more details about model parameters in You and Chapman (2006). 
+If \code{tran = "log"}, the linking model will be: \eqn{\log(\theta_i) = x_i \beta + b_i v_i}. 
+\code{tran = "logit"} means that logit transformation will be taken and the model will be: \eqn{logit(\theta_i) 
+= x_i \beta + b_i v_i}. Both are unmatched area level models. See Rao (2003).
 
-Initial values are crucial to MCMC convergence. EBLUP predictors of \eqn{\theta}'s and \eqn{\beta}'s provides good 
-starting values for MCMC procedure. 
+The neighbourhood matrix has the ith diagonal element equal to the number of neighbours of area i, and 
+off-diagonal elements equal to \code{-1} if the corresponding areas are neighbours otherwise \code{0}. 
+See You and Chapman (2006). 
+
+The ith tuple in the argument \code{prox} indicates that area \code{prox[i, 1]} and area \code{prox[i, 2]} 
+are neighbours. Duplicated tuples will be omitted. For example, if the first row of \code{prox} is (1, 2) 
+while the second is (2, 1), the second row will be deleted. The two elements within each tuple are not 
+supposed to be the same. 
+
+Initial values are crucial to MCMC convergence. EBLUP predictors of \eqn{\theta}'s and \eqn{\beta}'s can provides 
+good starting values for MCMC procedure. 
 
 The list \code{prior} should include following attributes for basic Fay-Herriot model:
 
 \itemize{
-\item \code{betatype}: to be chosen between \code{"non_in"} or \code{"normal"}. If \code{betatype = "non_in"}, 
+\item \code{beta.type}: to be chosen between \code{"non_in"} or \code{"normal"}. If \code{beta.type = "non_in"}, 
 non-informative prior would be specified for \eqn{\beta}. Otherwise, prior for \eqn{\beta} would be normal 
-distribution. \item \code{betaprior}: a list contains components \code{beta0} and \code{eps1} if \code{betatype = "normal"}. 
+distribution. 
+\item \code{beta.prior}: a list contains components \code{beta0} and \code{eps1} if \code{beta.type = "normal"}. 
 As a result \eqn{\beta} will be distributed with mean \eqn{\mu = \beta_0} and covariance matrix 
 \eqn{\Sigma = diag(rep(1/eps1, p))} where p is length of \eqn{\beta} including the intercept term. 
-\item \code{Sqsigmavtype}: to be chosen between \code{"inv_gamma"} and \code{"unif"}. \eqn{\sigma_v^2} is the 
-variance of residual in the linking model. See \code{\link{link.model}}. If \code{Sqsigmavtype = "inv_gamma"}, 
-inverse gamma prior would be specified for \eqn{\sigma_v^2}. Otherwise, \eqn{\sigma_v^2} would be uniformly distributed.
-\item \code{Sqsigmavprior}: a list containing components \code{a0} and \code{b0} as shape and rate parameter in the 
-gamma prior. if \code{Sqsigmavtype = "inv_gamma"}. Otherwise the list should contain the \code{eps2} component and 
-\eqn{\sigma_v^2} would be uniformly distributed on (0, 1 / \code{eps2})
+\item \code{sigv.type}: to be chosen between \code{"inv_gamma"} and \code{"unif"}. \eqn{\sigma_v^2} is the 
+variance of residual in the linking model. If \code{sigv.type = "inv_gamma"}, inverse gamma prior would be specified 
+for \eqn{\sigma_v^2}. Otherwise, \eqn{\sigma_v^2} would be uniformly distributed. 
+\item \code{sigv.prior}: a list containing components \code{a0} and \code{b0} as shape and rate parameter in the 
+gamma prior. if \code{sigv.type = "inv_gamma"}. Otherwise the list should contain the \code{eps2} component and 
+consequently \eqn{\sigma_v^2} would be uniformly distributed on (0, 1 / \code{eps2})
 }
 
-Besides, the \code{prior} list should also include attribute \code{Sqsigmaprior} to specify priors for \eqn{\sigma_i^2} 
-in the You-Chapman model. See You and Chapman (2006). The \code{Sqsigmaprior} is also a list contains the 
-the components \code{ai} and \code{bi}. Both \code{ai} and \code{bi} are vectors whose length are the same as 
+Besides, the \code{prior} list should also include attribute \code{sig2.prior} to specify priors for \eqn{\sigma_i^2} 
+in the You-Chapman model. See You and Chapman (2006). The \code{sig2.prior} is also a list contains the 
+components \code{ai} and \code{bi}. Both \code{ai} and \code{bi} are vectors whose length are the same as 
 number of domains. Thus, prior for \eqn{\sigma_i^2} would be inverse gamma distribution with shape parameter 
-\code{ai[i]} and rate parameter \code{bi[i]}. 
+\code{ai[i]} and rate parameter \code{bi[i]}. Default value of elements in \code{ai} and \code{bi} are all 0.05. 
 %%  ~~ If necessary, more details than the description above ~~
 }
-\value{The function returns a list containing the following components:
+\value{The function returns a object of class \code{"BayesSAE"} containing the following components:
 
-\item{theta}{\code{m * n} matrix of MCMC draws for \eqn{\theta}'s} 
-\item{beta}{\code{p * n} matrix of MCMC draws for \eqn{\beta}'s where \code{p} is the number of regressors 
-including the intercept term}
-\item{Sqsigmav}{vector contains \code{n} draws for \eqn{\sigma_v^2}}
+\item{mcmc}{an mcmc object that contains the posterior sample. This object can be summarized
+by functions provided by the coda package} 
 \item{type}{character string indicating the type of the model. For instance "UFH" indicates that it's an
 unmatched Fay-Herriot model while "SYC" refers to spatial You-Chapman model}
-\item{lambda}{vector contains \code{n} draws for \eqn{\lambda} in the spatial model}
-\item{rate_lam}{the acceptance rate of \eqn{\lambda} since draws of \eqn{\lambda} are generated by M-H algorithm} 
-\item{Sqsigma}{\code{m * n} matrix of MCMC draws for \eqn{\sigma_i^2} in the You-Chapman model}
+\item{Y}{response vector in the sampling model}
+\item{X}{design matrix in the linking model}
+\item{Z}{variance of direct estimation in the sampling model}
+\item{lam.rate}{the acceptance rate of \eqn{\lambda} since draws of \eqn{\lambda} are generated by M-H algorithm} 
+\item{D_avg}{average deviance, defined as \deqn{-\frac{2}{n} \sum_{i=1}^n p(y|\theta^{i})}{%
+-2/n \sum_{i=1}^n p(y|\theta^{i})} where \eqn{\theta^{i}} donates the ith posterior draw of \eqn{\theta}.}
+\item{D_theta.hat}{discrepancy between data and model depending on a point estimator for \eqn{\theta},
+defined as \deqn{-2 p(y|\hat{\theta})}{-2 p(y|\theta^')} where \eqn{\hat{\theta}}{\theta^'} is the point 
+estimator for \eqn{\theta}. Here we calculate the posterior mean as the point estimator}
+\item{DIC}{deviance information criterion, defined as \code{2D_avg - D_theta.hat}. Small \code{DIC} value 
+indicates strong out-of-sample predictive power}
+\item{theta.HB}{a vector of length the same as number of domains provides Rao-Blackwell estimators for each area.}
+\item{call}{the original function call}
+\item{HB}{Rao-Blackwellization of theta's}
+\item{spatial}{logical variable indicating whether the model is spatial or not}
+\item{tran}{character indicating the transformation of response variable in the linking model}
 
-If it's an unmatched model, \eqn{\theta_i}'s are generated by M-H algorithm and \code{rate} as a 
+If it's an unmatched model, \eqn{\theta_i}'s are generated by M-H algorithm and \code{theta.rate} as a 
 vector of length \code{m} provides acceptance rate for each \eqn{\theta_i} respectively is involved 
 
 %%  ~Describe the value returned
@@ -90,6 +139,11 @@ vector of length \code{m} provides acceptance rate for each \eqn{\theta_i} respe
 \references{
 You, Y. and Chapman, B. (2006) Small Area Estimation Using Area Level Models and Estimated Sampling 
 Variances. \emph{ Survey Methodology,} \bold{ 32:} 97-103.
+
+Rao, J. N. K. (2003) \emph{ Small Area Estimation}. John Wiley and Sons.
+
+Gelman, A. and Carlin, J. B. and Stern, H. S. and Rubin, D. B. (2006). \emph{ Bayesian Data Analysis,} 
+CRC Press Company.
 %% ~put references to the literature/web site here ~
 }
 \author{
@@ -99,36 +153,27 @@ Chengchun Shi
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-\code{\link{samp.model}}, \code{\link{link.model}}
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
-#load data set
+# load data set
 data(SAIPE)
+m <- length(SAIPE$SACPR)
 
-#construct the sampling model
-samp <- samp.model(y = SACPR, vardir = Vardir, data = SAIPE, innov = "t", 
-   	df = rep(50, length(SAIPE$SACPR)))
+# basic Fay-Herriort models (FH)
+result <- BayesSAE(SACPR~SNAPR+CenPR+CPER|Vardir, data = SAIPE, mcmc = 5000)
 
-#define the neighbourhood matrix
+# You-Chapman models (YC)
+result <- BayesSAE(SACPR~SNAPR+CenPR+CPER|Vardir, data = SAIPE, mcmc = 5000, innov = "t", 
+    df = rep(50, m))
+	
+# spatial model with unknown sampling variance (SYC)
+# define the neighbourhood matrix
 prox <- cbind(sample(1:51, 50, replace = TRUE), sample(1:51, 50, replace = TRUE))
 prox <- prox[prox[,1] != prox[,2], ]
+result <- BayesSAE(SACPR~SNAPR+CenPR+CPER|Vardir, data = SAIPE, mcmc = 5000, innov = "t",
+    df = rep(50, m), spatial = TRUE, prox = prox)
 
-#construct the linking model
-link <- link.model(~SNAPR+CenPR+CPER, data = SAIPE, prox = prox, spatial = TRUE)
-
-#get initial values
-MCMCstart <- list(theta = runif(51), beta = runif(4), lambda = runif(1))
-
-#specify priors
-Sqsigmavprior <- list(a0 = 0.1^6, b0 = 0.1^6)
-Sqsigmaprior <- list(ai = rep(0.1^6, 51), bi = rep(0.1^6, 51))
-prior <- list(betatype = "non_in", Sqsigmavtype = "inv_gamma", Sqsigmavprior = Sqsigmavprior, 
-   	Sqsigmaprior = Sqsigmaprior)
-	
-#obtain MCMC draws
-result <- BayesSAE(samp, link, MCMCstart, prior, 5000)
+# Unmatched models (UFH)
+result <- BayesSAE(SACPR~SNAPR+CenPR+CPER|Vardir, data = SAIPE, mcmc = 5000, tran = "log")	
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -23,6 +23,6 @@ function(theta, beta, y, X, b, phi, n, betaprior, Sqsigmaprior, betatype, Sqsigm
      }
      result[[1]] <- array(result[[1]], c(m, n))
      result[[2]] <- array(result[[2]], c(p, n))
-     MCMCsample <- list(theta = result[[1]], beta = result[[2]], Sqsigmav = result[[3]], type = "FH")
+     MCMCsample <- list(theta = result[[1]], beta = result[[2]], sigv = result[[3]], type = "FH")
      MCMCsample
 }

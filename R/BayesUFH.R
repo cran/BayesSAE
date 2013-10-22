@@ -34,6 +34,7 @@ function(theta, beta, y, X, b, phi, n, betaprior, Sqsigmaprior, betatype, thetat
           result[[1]] <- 1 / (1 + exp(-array(result[[1]], c(m, n))))
      result[[2]] <- array(result[[2]], c(p, n))
      result[[16]] <- result[[16]] / (n - 1)
-     MCMCsample <- list(theta = result[[1]], beta = result[[2]], Sqsigmav = result[[3]], rate = result[[16]], type = "UFH")
+     MCMCsample <- list(theta = result[[1]], beta = result[[2]], sigv = result[[3]], 
+         theta.rate = result[[16]], type = "UFH")
      MCMCsample
 }

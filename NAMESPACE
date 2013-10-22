@@ -1,3 +1,8 @@
 useDynLib(BayesSAE)
-export(BayesSAE, link.model, model.compare, samp.model, theta.HB, y.rep)
+import("Formula")
+import("lattice")
+import("coda")
+exportPattern(BayesSAE, replication, MCMC)
 
+S3method("print", "BayesSAE")
+S3method("summary", "BayesSAE")

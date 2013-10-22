@@ -1,6 +1,7 @@
 model.compare <-
-function(result, samp, subset, poest = "mean"){
-     if (samp$innov != "normal" && samp$innov != "t")
+function(result, subset, poest = "mean"){
+     innov <- result$innov
+     if (innov != "normal" && innov != "t")
           stop("Sampling model must be with normal or t innovations") 
      if (is.null(result$theta))
           stop("MCMC draws of theta's are needed")
@@ -9,31 +10,31 @@ function(result, samp, subset, poest = "mean"){
      theta <- result$theta[,subset]
      m <- nrow(theta)
      n <- ncol(theta)
-     y <- samp$y
-     if (length(y) != m)
-          stop("length of y and number of rows of theta should be the same")
-     if (samp$innov == "normal"){
-          vardir <- samp$vardir
-          if (length(vardir) != m)
+     Y <- result$Y
+     if (length(Y) != m)
+          stop("length of response vector and number of rows of theta should be the same")
+     if (innov == "normal"){
+          Z <- result$Z
+          if (length(Z) != m)
                stop("length of vardir and number of rows of theta should be the same")
-          D_avg <- -2 * mean(apply(dnorm(y, theta, sqrt(vardir), log = TRUE), 2, sum))
+          D_avg <- -2 * mean(apply(dnorm(Y, theta, sqrt(Z), log = TRUE), 2, sum))
           if (poest == "mean")
-               D_theta.hat <- dnorm(y, rowMeans(theta), sqrt(vardir), log = TRUE)
+               D_theta.hat <- dnorm(Y, rowMeans(theta), sqrt(Z), log = TRUE)
           else
-               D_theta.hat <- dnorm(y, apply(theta, 1, median), sqrt(vardir), log = TRUE) 
+               D_theta.hat <- dnorm(Y, apply(theta, 1, mean), sqrt(Z), log = TRUE) 
           D_theta.hat <- -2 * sum(D_theta.hat)  
      }
      else{
-          Sqsigma <- result$Sqsigma[,subset]
-          if (nrow(Sqsigma) != m)
-               stop("number of rows of Sqsigma should be the same as that of theta")
-          if (ncol(Sqsigma) != n)
-               stop("number of draws of Sqsigma should be the same as that of theta")
-          D_avg <- -2 * mean(apply(dnorm(y, theta, sqrt(Sqsigma), log = TRUE), 2, sum))
+          sig2 <- result$sig2[,subset]
+          if (nrow(sig2) != m)
+               stop("number of rows of sigma2 should be the same as that of theta")
+          if (ncol(sig2) != n)
+               stop("number of draws of sigma2 should be the same as that of theta")
+          D_avg <- -2 * mean(apply(dnorm(Y, theta, sqrt(sig2), log = TRUE), 2, sum))
           if (poest == "mean")
-               D_theta.hat <- dnorm(y, rowMeans(theta), sqrt(rowMeans(Sqsigma)), log = TRUE)
+               D_theta.hat <- dnorm(Y, rowMeans(theta), sqrt(rowMeans(sig2)), log = TRUE)
           else
-               D_theta.hat <- dnorm(y, apply(theta, 1, median), sqrt(apply(Sqsigma, 1, median)), log = TRUE) 
+               D_theta.hat <- dnorm(Y, apply(theta, 1, mean), sqrt(apply(sig2, 1, mean)), log = TRUE) 
           D_theta.hat <- -2 * sum(D_theta.hat) 
      }
      criter <- list(D_avg = D_avg, D_theta.hat = D_theta.hat, DIC = 2 * D_avg - D_theta.hat)
