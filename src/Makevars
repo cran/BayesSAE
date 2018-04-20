@@ -1,2 +1,2 @@
-PKG_LIBS = -L/gsl/i386/lib -lgsl -lgslcblas -lm
-PKG_CPPFLAGS = -I/gsl/i386/include
+PKG_LIBS = -L/gsl/win64/lib -lgsl -lgslcblas -lm
+PKG_CPPFLAGS = -I/gsl/win64/include

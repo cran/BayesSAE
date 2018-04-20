@@ -138,8 +138,8 @@ extern "C"{
 			gsl_rng_env_setup();
 			T1 = gsl_rng_default;
 			r1 = gsl_rng_alloc(T1);
-			unsigned long int s = rand();
-			gsl_rng_set(r1, 100 * time(0) + s);
+//			unsigned long int s = rand();
+			gsl_rng_set(r1, 100 * time(0)); // + s);
 
 			// prior specification for theta
 			double eps2 = Sqsigmav_prior[0];
@@ -295,8 +295,8 @@ extern "C"{
 		gsl_rng_env_setup();
 		T = gsl_rng_default;
 		r = gsl_rng_alloc(T);
-		unsigned long int s1 = rand();
-		gsl_rng_set(r, 100 * time(0) + s1);
+//		unsigned long int s1 = rand();
+		gsl_rng_set(r, 100 * time(0)); // + s1);
 
 		// define U
 		gsl_vector *gslU = gsl_vector_alloc(*m);
@@ -449,8 +449,8 @@ extern "C"{
 			gsl_rng_env_setup();
 			T1 = gsl_rng_default;
 			r1 = gsl_rng_alloc(T1);
-			unsigned long int s2 = rand();
-			gsl_rng_set(r1, 100 * time(0) + s2);
+//			unsigned long int s2 = rand();
+			gsl_rng_set(r1, 100 * time(0)); // + s2);
 
 			// prior specification for theta
 			double eps2 = Sqsigmav_prior[0];
@@ -786,8 +786,8 @@ extern "C"{
 			gsl_rng_env_setup();
 			T1 = gsl_rng_default;
 			r1 = gsl_rng_alloc(T1);
-			unsigned long int s = rand();
-			gsl_rng_set(r1, 100 * time(0) + s);
+//			unsigned long int s = rand();
+			gsl_rng_set(r1, 100 * time(0)); // + s);
 
 			// prior specification for theta
 			double eps2 = Sqsigmav_prior[0];
@@ -976,8 +976,8 @@ extern "C"{
 		gsl_rng_env_setup();
 		T = gsl_rng_default;
 		r = gsl_rng_alloc(T);
-		unsigned long int s1 = rand();
-		gsl_rng_set(r, 100 * time(0) + s1);
+//		unsigned long int s1 = rand();
+		gsl_rng_set(r, 100 * time(0)); // + s1);
 
 		// define U
 		gsl_vector *gslU = gsl_vector_alloc(*m);
@@ -1245,8 +1245,8 @@ extern "C"{
 			gsl_rng_env_setup();
 			T1 = gsl_rng_default;
 			r1 = gsl_rng_alloc(T1);
-			unsigned long int s2 = rand();
-			gsl_rng_set(r1, 100 * time(0) + s2);
+//			unsigned long int s2 = rand();
+			gsl_rng_set(r1, 100 * time(0)); // + s2);
 
 			// prior specification for theta
 			double eps2 = Sqsigmav_prior[0];
@@ -1563,8 +1563,8 @@ extern "C"{
 		gsl_rng_env_setup();
 		T = gsl_rng_default;
 		r = gsl_rng_alloc(T);
-		unsigned long int s2 = rand();
-		gsl_rng_set(r, 100 * time(0) + s2);
+//		unsigned long int s2 = rand();
+		gsl_rng_set(r, 100 * time(0)); // + s2);
 		double U;
 
 		// Sqsigmatype = 0
@@ -1682,8 +1682,8 @@ extern "C"{
 			gsl_rng_env_setup();
 			T1 = gsl_rng_default;
 			r1 = gsl_rng_alloc(T1);
-			unsigned long int s1 = rand();
-			gsl_rng_set(r1, 100 * time(0) + s1);
+//			unsigned long int s1 = rand();
+			gsl_rng_set(r1, 100 * time(0)); // + s1);
 
 			// prior specification for theta
 			double eps2 = Sqsigmav_prior[0];
@@ -1869,8 +1869,8 @@ extern "C"{
 		gsl_rng_env_setup();
 		T = gsl_rng_default;
 		r = gsl_rng_alloc(T);
-		unsigned long int s2 = rand();
-		gsl_rng_set(r, 100 * time(0) + s2);
+//		unsigned long int s2 = rand();
+		gsl_rng_set(r, 100 * time(0)); // + s2);
 		double U;
 
 		// Sqsigmatype = 0
@@ -2018,8 +2018,8 @@ extern "C"{
 			gsl_rng_env_setup();
 			T1 = gsl_rng_default;
 			r1 = gsl_rng_alloc(T1);
-			unsigned long int s1 = rand();
-			gsl_rng_set(r1, 100 * time(0) + s1);
+//			unsigned long int s1 = rand();
+			gsl_rng_set(r1, 100 * time(0)); // + s1);
 
 			// prior specification for theta
 			double eps2 = Sqsigmav_prior[0];

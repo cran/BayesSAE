@@ -2,7 +2,11 @@ useDynLib(BayesSAE)
 import("Formula")
 import("lattice")
 import("coda")
+importFrom("stats", "as.formula", "coef", "delete.response", "dnorm",
+           "lm", "model.matrix", "model.response", "printCoefmat",
+           "rgamma", "rnorm", "runif", "terms")
 exportPattern(BayesSAE, replication, MCMC)
 
 S3method("print", "BayesSAE")
 S3method("summary", "BayesSAE")
+S3method("print", "summary.BayesSAE")

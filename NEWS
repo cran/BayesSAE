@@ -8,3 +8,9 @@ Changes in Version 1.0-1
 	
 	o Posterior draws are allowed to coerce to the mcmc class, which can are allowed to use function in 
 	the coda package for further diagnosis 
+	
+Changes in Version 1.0-2
+
+	o Update of Maintainer's email address
+	
+	o Registration of the S3 methods
